@@ -1,0 +1,89 @@
+[
+  {
+    "entity_id": "light.living_room_lamp",
+    "state": "on",
+    "attributes": {
+      "friendly_name": "Living Room Lamp"
+    }
+  },
+  {
+    "entity_id": "light.bedroom_lamp",
+    "state": "off",
+    "attributes": {
+      "friendly_name": "Bedroom Lamp"
+    }
+  },
+  {
+    "entity_id": "switch.coffee_machine",
+    "state": "off",
+    "attributes": {
+      "friendly_name": "Coffee Machine"
+    }
+  },
+  {
+    "entity_id": "sensor.outdoor_temperature",
+    "state": "23.4",
+    "attributes": {
+      "friendly_name": "Outdoor Temperature",
+      "unit_of_measurement": "°C"
+    }
+  },
+  {
+    "entity_id": "sensor.living_room_humidity",
+    "state": "52",
+    "attributes": {
+      "friendly_name": "Living Room Humidity",
+      "unit_of_measurement": "%"
+    }
+  },
+  {
+    "entity_id": "binary_sensor.front_door",
+    "state": "off",
+    "attributes": {
+      "friendly_name": "Front Door"
+    }
+  },
+  {
+    "entity_id": "climate.hallway_thermostat",
+    "state": "cool",
+    "attributes": {
+      "friendly_name": "Hallway Thermostat",
+      "temperature": 22
+    }
+  },
+  {
+    "entity_id": "fan.office_fan",
+    "state": "on",
+    "attributes": {
+      "friendly_name": "Office Fan"
+    }
+  },
+  {
+    "entity_id": "cover.living_room_blinds",
+    "state": "open",
+    "attributes": {
+      "friendly_name": "Living Room Blinds"
+    }
+  },
+  {
+    "entity_id": "lock.front_door_lock",
+    "state": "locked",
+    "attributes": {
+      "friendly_name": "Front Door Lock"
+    }
+  },
+  {
+    "entity_id": "media_player.tv",
+    "state": "idle",
+    "attributes": {
+      "friendly_name": "TV"
+    }
+  },
+  {
+    "entity_id": "vacuum.robot_vacuum",
+    "state": "docked",
+    "attributes": {
+      "friendly_name": "Robot Vacuum"
+    }
+  }
+]
