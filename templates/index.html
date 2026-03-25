@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Assistant Control Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="page-shell">
+        <div class="app-container">
+            <header class="hero">
+                <div>
+                    <p class="eyebrow">Home Assistant</p>
+                    <h1>Control Panel</h1>
+                    <p class="subtitle">
+                        Browse and control Home Assistant entities through a clean local dashboard.
+                    </p>
+                </div>
+
+                <div class="hero-meta">
+                    <div class="status-card">
+                        <span class="status-label">Status</span>
+                        <span class="status-value">{{ connection_status }}</span>
+                    </div>
+                    <div class="status-card">
+                        <span class="status-label">Entities</span>
+                        <span class="status-value">{{ total_entities }}</span>
+                    </div>
+                    <div class="status-card">
+                        <span class="status-label">Updated</span>
+                        <span class="status-value">{{ last_updated }}</span>
+                    </div>
+                </div>
+            </header>
+
+            {% if demo_mode %}
+            <div class="banner banner-info">
+                Demo mode is enabled. The dashboard is showing sample entities from <code>demo_data.json</code>.
+            </div>
+            {% endif %}
+
+            {% if connection_error %}
+            <div class="banner banner-error">
+                {{ connection_error }}
+            </div>
+            {% endif %}
+
+            <section class="toolbar">
+                <form method="GET" action="/" class="toolbar-form">
+                    <div class="field">
+                        <label for="search">Search</label>
+                        <input
+                            type="text"
+                            id="search"
+                            name="search"
+                            placeholder="Search by name or entity_id"
+                            value="{{ search }}"
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="domain">Domain</label>
+                        <select id="domain" name="domain">
+                            <option value="all" {% if selected_domain == 'all' %}selected{% endif %}>All</option>
+                            {% for domain_name in domains_present %}
+                            <option value="{{ domain_name }}" {% if selected_domain == domain_name %}selected{% endif %}>
+                                {{ domain_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="field checkbox-field">
+                        <label for="available_only">Available only</label>
+                        <input
+                            type="checkbox"
+                            id="available_only"
+                            name="available_only"
+                            value="true"
+                            {% if available_only %}checked{% endif %}
+                        >
+                    </div>
+
+                    <div class="toolbar-actions">
+                        <button class="btn btn-primary" type="submit">Apply Filters</button>
+                        <a class="btn btn-secondary" href="/">Reset</a>
+                    </div>
+                </form>
+            </section>
+
+            {% if grouped_entities %}
+            <section class="domain-grid">
+                {% for domain_name, entities in grouped_entities.items() %}
+                <div class="domain-card">
+                    <div class="domain-card-header">
+                        <h2>{{ domain_name }}</h2>
+                        <span class="count-pill">{{ entities|length }}</span>
+                    </div>
+
+                    <div class="entity-list">
+                        {% for entity in entities %}
+                        <div class="entity-row">
+                            <div class="entity-info">
+                                <div class="entity-name">{{ entity.name }}</div>
+                                <div class="entity-id">{{ entity.entity_id }}</div>
+                            </div>
+
+                            <div class="entity-state-area">
+                                <span class="state-badge
+                                    {% if entity.state == 'on' %}
+                                        state-on
+                                    {% elif entity.state == 'off' %}
+                                        state-off
+                                    {% elif entity.state == 'unavailable' %}
+                                        state-unavailable
+                                    {% elif entity.state == 'unknown' %}
+                                        state-unknown
+                                    {% else %}
+                                        state-neutral
+                                    {% endif %}
+                                ">
+                                    {{ entity.state }}
+                                    {% if entity.attributes.unit_of_measurement %}
+                                        {{ entity.attributes.unit_of_measurement }}
+                                    {% endif %}
+                                </span>
+
+                                {% if entity.domain in ['light', 'switch', 'fan'] and not demo_mode %}
+                                <div class="entity-actions">
+                                    <form method="POST" action="/service">
+                                        <input type="hidden" name="entity_id" value="{{ entity.entity_id }}">
+                                        <input type="hidden" name="service" value="turn_on">
+                                        <input type="hidden" name="search" value="{{ search }}">
+                                        <input type="hidden" name="domain" value="{{ selected_domain }}">
+                                        <input type="hidden" name="available_only" value="{{ 'true' if available_only else 'false' }}">
+                                        <button class="mini-btn" type="submit">On</button>
+                                    </form>
+
+                                    <form method="POST" action="/service">
+                                        <input type="hidden" name="entity_id" value="{{ entity.entity_id }}">
+                                        <input type="hidden" name="service" value="turn_off">
+                                        <input type="hidden" name="search" value="{{ search }}">
+                                        <input type="hidden" name="domain" value="{{ selected_domain }}">
+                                        <input type="hidden" name="available_only" value="{{ 'true' if available_only else 'false' }}">
+                                        <button class="mini-btn mini-btn-danger" type="submit">Off</button>
+                                    </form>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </section>
+            {% else %}
+            <section class="empty-state">
+                <h2>No entities found</h2>
+                <p>Try changing the filters, enabling demo mode, or checking your Home Assistant connection.</p>
+            </section>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
